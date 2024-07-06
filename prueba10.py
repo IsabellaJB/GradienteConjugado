@@ -21,8 +21,6 @@ def gradiente(funcion, x, delta=0.001):
         derivadas.append(derivada)
     return np.array(derivadas)
 
-
-
 # ---------------------------------- BUSQUEDA DORADA ---------------------------------- 
 def regla_eliminacion(x1, x2, fx1, fx2, a, b):
     if fx1 > fx2:
@@ -87,7 +85,7 @@ def fibonacci_search(funcion, epsilon, a, b):
 
 
 
-# ------------------------------------ GRADIENTE CONJUGADO ------------------------------------ 
+# ------------------------------------ Gradiente Conjugado ------------------------------------ 
 def gradiente_conjugado(f_o, x0, e1, e2, e3, metodo_busqueda):
     x = x0
     grad = gradiente(f_o, x)
@@ -97,6 +95,7 @@ def gradiente_conjugado(f_o, x0, e1, e2, e3, metodo_busqueda):
     def line_search(f_o, x, s, e1):
         def alpha_funcion(alpha):
             return f_o(x + alpha * s)
+
         return metodo_busqueda(alpha_funcion, e1, 0.0, 1.0)
 
     while True:
@@ -114,68 +113,22 @@ def gradiente_conjugado(f_o, x0, e1, e2, e3, metodo_busqueda):
         grad = grad_next
         k += 1
 
-    return x
+    return x, f_o(x), k
 
-
-
-
-
-
+# Example usage
 x0 = np.array([1, 1])
 epsilon1 = 1e-6
 epsilon2 = 1e-6
 epsilon3 = 1e-6
 
-resul_golden = gradiente_conjugado(funcion_objetivo, x0, epsilon1, epsilon2, epsilon3, metodo_busqueda=busquedaDorada)
-resul_fibonacci = gradiente_conjugado(funcion_objetivo, x0, epsilon1, epsilon2, epsilon3, metodo_busqueda=fibonacci_search)
+x_min, f_min, k = gradiente_conjugado(funcion_objetivo, x0, epsilon1, epsilon2, epsilon3, metodo_busqueda=busquedaDorada)
+x_min2, f_min2, k2 = gradiente_conjugado(funcion_objetivo, x0, epsilon1, epsilon2, epsilon3, metodo_busqueda=fibonacci_search)
 
-print(f"Resultados Golden: {resul_golden}")
-print(f"Resultados Fibonacci: {resul_fibonacci}")
-
-
-
+print(f"Minimizer: {x_min}")
+print(f"Function value at minimizer: {f_min}")
+print(f"Number of iterations: {k}")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+print(f"Minimizer: {x_min2}")
+print(f"Function value at minimizer: {f_min2}")
+print(f"Number of iterations: {k2}")

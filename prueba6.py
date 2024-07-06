@@ -21,8 +21,6 @@ def gradiente(funcion, x, delta=0.001):
         derivadas.append(derivada)
     return np.array(derivadas)
 
-
-
 # ---------------------------------- BUSQUEDA DORADA ---------------------------------- 
 def regla_eliminacion(x1, x2, fx1, fx2, a, b):
     if fx1 > fx2:
@@ -47,19 +45,16 @@ def busquedaDorada(funcion, epsilon, a, b):
         Lw = bw - aw
     return (w_to_x(aw, a, b) + w_to_x(bw, a, b)) / 2
 
-
-
 # ---------------------------------- BUSQUEDA DE FIBONACCI ---------------------------------- 
 def fibonacci_search(funcion, epsilon, a, b):
-    fibs = [1, 1]
-    
+    fibs = [0, 1]
     while (b - a) / fibs[-1] > epsilon:
         fibs.append(fibs[-1] + fibs[-2])
 
-    n = len(fibs)
-    k = n - 2 
+    n = len(fibs) - 1
+    k = n - 1
 
-    x1 = a + fibs[k-1] / fibs[k+1] * (b - a)
+    x1 = a + fibs[k-1] / fibs[k] * (b - a)
     x2 = a + fibs[k] / fibs[k+1] * (b - a)
     f1 = funcion(x1)
     f2 = funcion(x2)
@@ -69,13 +64,13 @@ def fibonacci_search(funcion, epsilon, a, b):
             a = x1
             x1 = x2
             f1 = f2
-            x2 = a + fibs[k] / fibs[k+1] * (b - a)
+            x2 = a + fibs[k-1] / fibs[k] * (b - a)
             f2 = funcion(x2)
         else:
             b = x2
             x2 = x1
             f2 = f1
-            x1 = a + fibs[k-1] / fibs[k+1] * (b - a)
+            x1 = a + fibs[k-2] / fibs[k-1] * (b - a)
             f1 = funcion(x1)
         k -= 1
 
@@ -85,97 +80,44 @@ def fibonacci_search(funcion, epsilon, a, b):
         return x2
 
 
+# ---------------------------------- DISTANCIA ORIGEN ---------------------------------- 
+def distancia_origen(vector):
+    return np.linalg.norm(vector)
 
 
-# ------------------------------------ GRADIENTE CONJUGADO ------------------------------------ 
-def gradiente_conjugado(f_o, x0, e1, e2, e3, metodo_busqueda):
+
+# ---------------------------------- LINE SEARCH ---------------------------------- 
+def line_search(f, xk, punto, metodo_busqueda, epsilon2=1e-3):
+    def alpha_calcular(alpha):
+        return f(xk - alpha * punto)
+    
+    alpha = metodo_busqueda(alpha_calcular, epsilon2, 0.0, 1.0)
+    return alpha
+
+
+# ---------------------------------- DESCENSO DE GRADIENTE ---------------------------------- 
+def gradient_descent(f, grad_f, x0, epsilon=1e-3, max_iter=100, search_method='golden'):
     x = x0
-    grad = gradiente(f_o, x)
-    s = -grad
     k = 0
-
-    def line_search(f_o, x, s, e1):
-        def alpha_funcion(alpha):
-            return f_o(x + alpha * s)
-        return metodo_busqueda(alpha_funcion, e1, 0.0, 1.0)
-
-    while True:
-        alpha = line_search(f_o, x, s, e1)
-        x_next = x + alpha * s
-        grad_next = gradiente(f_o, x_next)
-
-        if np.linalg.norm(x_next - x) / (np.linalg.norm(x) + 1e-8) <= e2 or np.linalg.norm(grad_next) <= e3:
+    while k < max_iter:
+        grad = grad_f(f, x)
+        if np.linalg.norm(grad) < epsilon:
             break
-
-        beta = np.dot(grad_next, grad_next) / np.dot(grad, grad)
-        s = -grad_next + beta * s
-
-        x = x_next
-        grad = grad_next
+        
+        if search_method == 'golden':
+            alpha = line_search(f, x, grad, busquedaDorada, epsilon)
+        elif search_method == 'fibonacci':
+            alpha = line_search(f, x, grad, fibonacci_search, epsilon)
+        else:
+            raise ValueError("Método de búsqueda no reconocido")
+        
+        x = x - alpha * grad
         k += 1
-
-    return x
-
+    return x, k
 
 
 
-
-
-x0 = np.array([1, 1])
-epsilon1 = 1e-6
-epsilon2 = 1e-6
-epsilon3 = 1e-6
-
-resul_golden = gradiente_conjugado(funcion_objetivo, x0, epsilon1, epsilon2, epsilon3, metodo_busqueda=busquedaDorada)
-resul_fibonacci = gradiente_conjugado(funcion_objetivo, x0, epsilon1, epsilon2, epsilon3, metodo_busqueda=fibonacci_search)
-
-print(f"Resultados Golden: {resul_golden}")
-print(f"Resultados Fibonacci: {resul_fibonacci}")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Example usage
+x0 = np.array([0, 0])
+x, k = gradient_descent(funcion_objetivo, gradiente, x0, search_method='golden')
+print(f"Minimum found at x = {x}, after {k} iterations.")

@@ -21,8 +21,6 @@ def gradiente(funcion, x, delta=0.001):
         derivadas.append(derivada)
     return np.array(derivadas)
 
-
-
 # ---------------------------------- BUSQUEDA DORADA ---------------------------------- 
 def regla_eliminacion(x1, x2, fx1, fx2, a, b):
     if fx1 > fx2:
@@ -87,7 +85,7 @@ def fibonacci_search(funcion, epsilon, a, b):
 
 
 
-# ------------------------------------ GRADIENTE CONJUGADO ------------------------------------ 
+# ------------------------------------ Gradiente Conjugado ------------------------------------ 
 def gradiente_conjugado(f_o, x0, e1, e2, e3, metodo_busqueda):
     x = x0
     grad = gradiente(f_o, x)
@@ -97,6 +95,7 @@ def gradiente_conjugado(f_o, x0, e1, e2, e3, metodo_busqueda):
     def line_search(f_o, x, s, e1):
         def alpha_funcion(alpha):
             return f_o(x + alpha * s)
+
         return metodo_busqueda(alpha_funcion, e1, 0.0, 1.0)
 
     while True:
@@ -131,51 +130,3 @@ resul_fibonacci = gradiente_conjugado(funcion_objetivo, x0, epsilon1, epsilon2, 
 
 print(f"Resultados Golden: {resul_golden}")
 print(f"Resultados Fibonacci: {resul_fibonacci}")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
