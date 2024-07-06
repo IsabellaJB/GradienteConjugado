@@ -118,6 +118,15 @@ def gradiente_conjugado(f_o, x0, e1, e2, e3, metodo_busqueda):
 
 
 
+def redondear(arreglo):
+    lita = []
+    for valor in arreglo:
+        v = round(valor, 2)
+        lita.append(v)
+    return(lita)
+
+
+
 
 
 
@@ -129,8 +138,8 @@ epsilon3 = 1e-6
 resul_golden = gradiente_conjugado(funcion_objetivo, x0, epsilon1, epsilon2, epsilon3, metodo_busqueda=busquedaDorada)
 resul_fibonacci = gradiente_conjugado(funcion_objetivo, x0, epsilon1, epsilon2, epsilon3, metodo_busqueda=fibonacci_search)
 
-print(f"Resultados Golden: {resul_golden}")
-print(f"Resultados Fibonacci: {resul_fibonacci}")
+print(f"Resultados Golden: {redondear(resul_golden)}")
+print(f"Resultados Fibonacci: {redondear(resul_fibonacci)}")
 
 
 
