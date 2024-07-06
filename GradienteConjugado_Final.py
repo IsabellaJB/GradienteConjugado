@@ -88,7 +88,7 @@ def fibonacci_search(funcion, epsilon, a, b):
 
 
 # ------------------------------------ GRADIENTE CONJUGADO ------------------------------------ 
-def gradiente_conjugado(f_o, x0, e1, e2, e3, metodo_busqueda):
+def gradiente_conjugado(f_o, x0, metodo_busqueda, e1=1e-6, e2=1e-6, e3=1e-6):
     x = x0
     grad = gradiente(f_o, x)
     s = -grad
@@ -131,58 +131,20 @@ def redondear(arreglo):
 
 
 x0 = np.array([1, 1])
-epsilon1 = 1e-6
-epsilon2 = 1e-6
-epsilon3 = 1e-6
-
-resul_golden = gradiente_conjugado(funcion_objetivo, x0, epsilon1, epsilon2, epsilon3, metodo_busqueda=busquedaDorada)
-resul_fibonacci = gradiente_conjugado(funcion_objetivo, x0, epsilon1, epsilon2, epsilon3, metodo_busqueda=fibonacci_search)
-
-print(f"Resultados Golden: {redondear(resul_golden)}")
-print(f"Resultados Fibonacci: {redondear(resul_fibonacci)}")
 
 
 
 
 
+resul_golden = gradiente_conjugado(funcion_objetivo, x0, metodo_busqueda=busquedaDorada)
+print(f"Resultado Golden: {resul_golden}")
+print(f"Solución encontrada con búsqueda dorada: { redondear(resul_golden)}")
 
+print('\n'*2)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+resul_fibonacci = gradiente_conjugado(funcion_objetivo, x0, metodo_busqueda=fibonacci_search)
+print(f"Resultado Golden: {resul_fibonacci}")
+print(f"Solución encontrada con búsqueda dorada: { redondear(resul_fibonacci)}")
 
 
 
